@@ -1,5 +1,8 @@
 package su;
 
+import org.jetbrains.annotations.Nullable;
+import org.junit.jupiter.params.provider.NullAndEmptySource;
+
 import java.util.Arrays;
 import java.util.Scanner;
 
@@ -138,12 +141,49 @@ public class su3 {
         System.out.println("Yes");
 */
 
-        /*  • 10. Напишете програма, която намира повтарящото се числов масив от цели числа, въведен от потребителя.*/
-        
+        /*  • 10. Напишете програма, която намира повтарящото се число в масив от цели числа, въведен от потребителя.*/
+        /*int N = 5;
+        Integer number = null;
+        boolean isFound = false;
+        int[] arr = new int[N];
+        Scanner scanner = new Scanner(System.in);
+        for (int i = 0; i < N; i++) {
+            System.out.print("arr[" + i + "] = ");
+            arr[i] = scanner.nextInt();
+        }
+        for (int i = 0; i < N; i++) {
+            for (int j = i + 1; j < N; j++) {
+                if (arr[i] == arr[j]) {
+                    number = arr[i];
+                    isFound = true;
+                    break;
+                }
+            }
+            if (isFound) break;
+        }
+        if(number != null)
+            System.out.println(number);*/
 
 
-        /*  • 11. Напишете програма, която намира първатадвойкацели числа,вмасив от цели числа, въведен от потребителя,
-           чиято сума е равна на дадено число, също въведеноот потребителя(Input:61 2 3 4 3 6 5 8 3 9Output:1, 5).*/
-
+        /*  • 11. Напишете програма, която намира първата двойка цели числа, в масив от цели числа,
+        въведен от потребителя, чиято сума е равна на дадено число, също въведено от потребителя
+        (Input:6    1 2 3 4 3 6 5 8 3 9
+         Output:1, 5).*/
+        /*int sum;
+        boolean isFound = false;
+        Scanner scanner = new Scanner(System.in);
+        sum = scanner.nextInt();
+        int[] arr = {1,2,3,4,3,6,5,8,3,9};
+        for(int i=0; i<arr.length;i++){
+            if(arr[i]>sum) continue;
+            for(int j=i+1; j<arr.length; j++){
+                if(arr[i] + arr[j] == sum){
+                    System.out.println(arr[i] + " + " + arr[j] + " = " + sum);
+                    isFound = true;
+                    break;
+                }
+            }
+            if(isFound) break;
+        }*/
     }
 }

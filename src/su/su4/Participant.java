@@ -1,7 +1,7 @@
 package su.su4;
 
 public class Participant {
-    public String id;
+    public int id;
     public String name;
     public int age;
     public double chanceToWin;

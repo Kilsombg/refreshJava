@@ -3,6 +3,7 @@ package laboratory.zadacha2.soldier;
 import laboratory.zadacha2.modifier.IModifier;
 
 import java.util.List;
+import java.util.logging.LogManager;
 
 public class Soldier {
     private String name;
@@ -94,7 +95,7 @@ public class Soldier {
     public void printCharacteristic() {
         System.out.println(
                 this.name
-                        + "\nHP: " + this.health
+                        + "\nHP: " + this.health + "/" + this.maxHealth
                         + "\nATK: " + this.attack
                         + "\nDEF: " + this.meleeDefence + "/" + this.rangedDefence
                         + "\nModifiers"

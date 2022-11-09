@@ -1,9 +1,11 @@
 package laboratory.zadacha2.soldier;
 
+import laboratory.zadacha2.modifier.AttackModifier;
+import laboratory.zadacha2.modifier.DefenceModifier;
 import laboratory.zadacha2.modifier.IModifier;
 
+import java.util.ArrayList;
 import java.util.List;
-import java.util.logging.LogManager;
 
 public class Soldier {
     private String name;
@@ -15,6 +17,8 @@ public class Soldier {
     private double rangedDefence;
     private List<String> tags;
     private List<IModifier> modifiers;
+
+    private Soldier target = null;
 
 
     public Soldier(
@@ -105,24 +109,54 @@ public class Soldier {
         }
     }
 
-    @Deprecated
-    Soldier chooseTarget(List<Soldier> enemies) {
-        return null;
+    private List<AttackModifier> getAttackModifiers() {
+        List<AttackModifier> attackModifiers = new ArrayList<>();
+        for (IModifier modifier : modifiers) {
+            if (modifier instanceof AttackModifier) attackModifiers.add((AttackModifier) modifier);
+        }
+        return attackModifiers;
     }
 
-    @Deprecated
-    int getDamageAgainst(Soldier enemy) {
-        return 0;
+    private List<DefenceModifier> getDefenceModifiers() {
+        List<DefenceModifier> defenceModifier = new ArrayList<>();
+        for (IModifier modifier : modifiers) {
+            if (modifier instanceof DefenceModifier) defenceModifier.add((DefenceModifier) modifier);
+        }
+        return defenceModifier;
     }
 
-    @Deprecated
-    int getDamageFrom(Soldier enemy, int value, String type) {
-        return 0;
+    void chooseTarget(List<Soldier> enemies) {
+        double maxDmg = 0;
+        for (Soldier enemy : enemies) {
+            double dealtDmg = getDamageAgainst(enemy);
+            if (maxDmg < dealtDmg) {
+                maxDmg = dealtDmg;
+                target = enemy;
+            }
+        }
     }
 
-    @Deprecated
-    void receiveAttack(Soldier enemy, int value, String type) {
-
+    double getDamageAgainst(Soldier enemy) {
+        double modAtt = 0;
+        for (AttackModifier mod : getAttackModifiers()) {
+            modAtt += mod.bonusDamage(this, enemy);
+        }
+        return attack + modAtt;
     }
 
+    double getDamageFrom(Soldier enemy, int value, AttackType type) {
+        double defence = type == AttackType.MELEE ? meleeDefence : rangedDefence;
+        double modDefence = 0;
+        for (DefenceModifier mod : getDefenceModifiers()) {
+            modDefence += mod.bonusDefence(this, enemy);
+        }
+        double damageFrom = enemy.attack - defence - modDefence;
+        ;
+        return damageFrom > 0 ? damageFrom : 1;
+    }
+
+    void receiveAttack(Soldier enemy, int value, AttackType type) {
+        health -= getDamageFrom(enemy, value, type);
+        if (health < 0) health = 0;
+    }
 }

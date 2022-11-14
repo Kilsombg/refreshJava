@@ -12,6 +12,6 @@ public class AttackModifier {
     }
 
     public double bonusDamage(Soldier soldier, Soldier enemy) {
-        return enemy.getTags().contains(tag) ? soldier.getAttack() + value : soldier.getAttack();
+        return enemy.getTags().contains(tag) ?  value : 0;
     }
 }

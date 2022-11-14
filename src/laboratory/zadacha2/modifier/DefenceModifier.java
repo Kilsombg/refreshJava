@@ -5,17 +5,28 @@ import laboratory.zadacha2.soldier.Soldier;
 
 public class DefenceModifier {
     private final String tag;
-    private final int value;
+    private int meleeVal;
+    private int rangeVal;
+
+    public int getMeleeVal() {
+        return meleeVal;
+    }
+
+    public int getRangeVal() {
+        return rangeVal;
+    }
 
     public DefenceModifier(String tag, int value) {
         this.tag = tag;
-        this.value = value;
+        if(tag.equals("melee"))
+            this.meleeVal = value;
+        else this.rangeVal = value;
     }
 
     public double bonusDefence(Soldier soldier, Soldier enemy) {
         if (soldier.getAttackType() == AttackType.MELEE)
-            return enemy.getTags().contains(tag) ? enemy.getMeleeDefence() + value : soldier.getMeleeDefence();
+            return enemy.getTags().contains(tag) ? meleeVal : 0;
         else
-            return enemy.getTags().contains(tag) ? enemy.getRangedDefence() + value : soldier.getRangedDefence();
+            return enemy.getTags().contains(tag) ?  rangeVal : 0;
     }
 }

@@ -1,4 +1,4 @@
-package laboratory.sedmica7;
+package laboratory.sedmica_7;
 
 import java.io.File;
 import java.io.FileReader;

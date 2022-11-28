@@ -8,14 +8,28 @@ public class User implements IValidatePhone{
     private String number;
 
     public User(String name, String password, String number) {
-        if(ValidateName.check(name)) this.name = name;
+        try{
+            if(ValidateName.check(name)) this.name = name;
+            else throw new WrongUserException();
+        } catch (WrongUserException e) {
+            throw new RuntimeException(e);
+        }
         if(ValidatePassword.check(password)) this.password = password;
-        this.number = number;
+
+        try {
+            if(validatePhoneNumber(number)) this.number = number;
+        } catch (WrongPhoneNumberException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     @Override
     public boolean validatePhoneNumber(String phoneNumber) throws WrongPhoneNumberException {
         if(Pattern.matches("[0-9]{10}]", phoneNumber)) return true;
         else throw new WrongPhoneNumberException();
+    }
+
+    public String getName() {
+        return name;
     }
 }

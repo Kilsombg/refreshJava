@@ -2,7 +2,7 @@ package su.su5;
 
 import java.io.FileOutputStream;
 import java.io.OutputStream;
-
+/*
 public class FIleStreamPrimer {
     public static void main(String[] args) {
         try {
@@ -14,4 +14,4 @@ public class FIleStreamPrimer {
             os.close();
         }
     }
-}
+}*/

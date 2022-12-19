@@ -1,6 +1,8 @@
 package su.su5;
 
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
+import java.io.IOException;
 import java.io.OutputStream;
 
 public class FIleStreamPrimer {
@@ -12,6 +14,10 @@ public class FIleStreamPrimer {
                 os.write(array[i]);
             }
             os.close();
+        } catch (FileNotFoundException e) {
+            throw new RuntimeException(e);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
         }
     }
 }

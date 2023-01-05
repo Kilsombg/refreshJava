@@ -1,17 +1,17 @@
 package Exam.TryExample;
 
-public class Admin extends User {
-    public Admin(String username, String password) {
+public class Teacher extends User {
+    public Teacher(String username, String password) {
         super(username, password);
     }
 
     @Override
     UserType getUserType() {
-        return UserType.ADMIN;
+        return UserType.TEACHER;
     }
 
     @Override
     public String toString() {
-        return "Admin{}" + super.toString();
+        return "Teacher{}" + super.toString();
     }
 }

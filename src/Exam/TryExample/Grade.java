@@ -1,6 +1,7 @@
 package Exam.TryExample;
 
 import java.io.Serializable;
+import java.util.Objects;
 
 public class Grade implements Serializable {
     private String subject;
@@ -44,5 +45,20 @@ public class Grade implements Serializable {
                 ", semester=" + semester +
                 ", grade=" + grade +
                 '}';
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if(this == o) return true;
+        if(o==null || getClass() != o.getClass()) return false;
+        Grade grade1 = (Grade) o;
+        return  Objects.equals(subject,grade1.subject) ||
+                semester == grade1.semester ||
+                grade == grade1.grade;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(subject,semester,grade);
     }
 }

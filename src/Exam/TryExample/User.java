@@ -1,6 +1,7 @@
 package Exam.TryExample;
 
 import java.io.Serializable;
+import java.util.Objects;
 
 public abstract class User implements Serializable {
     private String username;
@@ -35,5 +36,18 @@ public abstract class User implements Serializable {
                 "username='" + username + '\'' +
                 ", password='" + password + '\'' +
                 '}';
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        User user = (User) o;
+        return Objects.equals(username, user.username) && Objects.equals(password, user.password);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(username, password);
     }
 }

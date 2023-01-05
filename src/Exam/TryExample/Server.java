@@ -2,16 +2,19 @@ package Exam.TryExample;
 
 import java.io.*;
 import java.net.ServerSocket;
-import java.util.ArrayList;
-import java.util.List;
+import java.net.Socket;
+import java.util.*;
+import java.util.stream.Collectors;
 
 public class Server {
     private static final String USERS_FILENAME = "users.bin";
+    private final Object usersLock;
     private ServerSocket server;
 
 
     public Server() {
         initAdmins();
+        usersLock = new Object();
     }
 
     private void initAdmins() {
@@ -30,8 +33,130 @@ public class Server {
     }
 
     public void start() {
-        List<User> list = loadUsers();
-        System.out.println(list);
+        try {
+            System.out.println("Server listening.");
+            server = new ServerSocket(8080);
+
+            while (true) {
+                Socket client = server.accept();
+
+                Thread clientThread = new Thread(() ->
+                {
+                    System.out.println("Accepted client.");
+                    Scanner sc = null;
+                    PrintWriter out = null;
+
+                    try {
+                        sc = new Scanner(client.getInputStream());
+                        out = new PrintWriter(client.getOutputStream());
+                        userMenu(sc, out);
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    } finally {
+                        if (sc != null)
+                            sc.close();
+                        if (out != null)
+                            out.close();
+                    }
+                });
+
+                clientThread.start();
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void userMenu(Scanner sc, PrintWriter out) {
+        while (true) {
+            out.println("Login? Y/N");
+            String login = sc.nextLine();
+
+            if (!login.equalsIgnoreCase("Y")) {
+                out.println("Goodbye.");
+                return;
+            }
+
+            out.println("Enter username:");
+            String username = sc.nextLine();
+
+            out.println("Enter password");
+            String password = sc.nextLine();
+
+            User user = login(username, password);
+
+            if (user == null) {
+                out.println("Error: Invalid login.");
+                continue;
+            }
+
+            switch (user.getUserType()) {
+                case ADMIN: {
+                    adminMenu(sc, out, (Admin) user);
+                    break;
+                }
+                case STUDENT: {
+                    studentMenu(sc, out, (Student) user);
+                    break;
+                }
+                case TEACHER: {
+                    teacherMenu(sc, out, (Teacher) user);
+                    break;
+                }
+            }
+        }
+    }
+
+
+    private void registerUser(String username, String password, UserType userType) throws CredentialException {
+        User user = UserFactory.createUser(username, password, userType);
+    }
+
+    private void adminMenu(Scanner sc, PrintWriter out, Admin admin) {
+        out.println("Logged in as admin.");
+
+        out.println("Enter user type to create: ADMIN | STUDENT | TEACHER");
+        try {
+            UserType userType = UserType.valueOf(sc.nextLine());
+
+            out.println("Enter username:");
+            String username = sc.nextLine();
+
+            out.println("Enter password:");
+            String password = sc.nextLine();
+
+            registerUser(username, password, userType);
+
+            out.println("Success.");
+        } catch (IllegalArgumentException e) {
+            out.println("Error: Invalid user type.");
+        } catch (CredentialException e) {
+            out.println(e.getMessage());
+        }
+    }
+
+
+    private void studentMenu(Scanner sc, PrintWriter out, Student student) {
+        out.println("Logged in as student.");
+        List<Grade> sortedGrades = student.getGrades()
+                .stream()
+                .sorted(Comparator.comparingInt(Grade::getSemester).thenComparing(Grade::getSubject))
+                .collect(Collectors.toList());
+        out.println(sortedGrades);
+    }
+
+    private void teacherMenu(Scanner sc, PrintWriter out, Teacher teacher) {
+
+    }
+
+    private User login(String username, String password) {
+        synchronized (usersLock) {
+            for (User user : loadUsers()) {
+                if (Objects.equals(user.getUsername(), username) && Objects.equals(user.getPassword(), password))
+                    return user;
+            }
+        }
+        return null;
     }
 
     public List<User> loadUsers() {

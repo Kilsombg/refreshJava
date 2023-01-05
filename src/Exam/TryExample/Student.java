@@ -13,7 +13,7 @@ public class Student extends User {
 
     @Override
     UserType getUserType() {
-        return null;
+        return UserType.STUDENT;
     }
 
     public List<Grade> getGrades() {

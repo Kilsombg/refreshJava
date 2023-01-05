@@ -146,7 +146,36 @@ public class Server {
     }
 
     private void teacherMenu(Scanner sc, PrintWriter out, Teacher teacher) {
+        out.println("Logged in as teacher.");
 
+        out.println("Enter student faculty number:");
+        String facultyNumber = sc.nextLine();
+
+        out.println("Enter subject:");
+        String subject = sc.nextLine();
+
+        out.println("Enter semester:");
+        int semester = Integer.parseInt(sc.nextLine());
+
+        out.println("Enter grade:");
+        int gradeValue = Integer.parseInt(sc.nextLine());
+
+        Grade grade = new Grade(subject,semester,gradeValue);
+
+        synchronized (usersLock) {
+            List<User> users = loadUsers();
+            for(User user: users) {
+                if(user.getUsername().equals(facultyNumber) && user instanceof Student){
+                    Student student = (Student) user;
+                    student.getGrades().add(grade);
+                    saveUsers(users);
+
+                    out.println("Success");
+                    return;
+                }
+            }
+            out.println("No such student.");
+        }
     }
 
     private User login(String username, String password) {

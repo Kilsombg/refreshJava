@@ -52,8 +52,8 @@ public class Grade implements Serializable {
         if(this == o) return true;
         if(o==null || getClass() != o.getClass()) return false;
         Grade grade1 = (Grade) o;
-        return  Objects.equals(subject,grade1.subject) ||
-                semester == grade1.semester ||
+        return  Objects.equals(subject,grade1.subject) &&
+                semester == grade1.semester &&
                 grade == grade1.grade;
     }
 

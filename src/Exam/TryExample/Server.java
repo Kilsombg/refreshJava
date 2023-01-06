@@ -44,11 +44,11 @@ public class Server {
                 {
                     System.out.println("Accepted client.");
                     Scanner sc = null;
-                    PrintWriter out = null;
+                    PrintStream out = null;
 
                     try {
                         sc = new Scanner(client.getInputStream());
-                        out = new PrintWriter(client.getOutputStream());
+                        out = new PrintStream(client.getOutputStream());
                         userMenu(sc, out);
                     } catch (IOException e) {
                         e.printStackTrace();
@@ -67,7 +67,7 @@ public class Server {
         }
     }
 
-    private void userMenu(Scanner sc, PrintWriter out) {
+    private void userMenu(Scanner sc, PrintStream out) {
         while (true) {
             out.println("Login? Y/N");
             String login = sc.nextLine();
@@ -110,14 +110,20 @@ public class Server {
 
     private void registerUser(String username, String password, UserType userType) throws CredentialException {
         User user = UserFactory.createUser(username, password, userType);
+
+        synchronized (usersLock) {
+            List<User> users = loadUsers();
+            users.add(user);
+            saveUsers(users);
+        }
     }
 
-    private void adminMenu(Scanner sc, PrintWriter out, Admin admin) {
+    private void adminMenu(Scanner sc, PrintStream out, Admin admin) {
         out.println("Logged in as admin.");
 
         out.println("Enter user type to create: ADMIN | STUDENT | TEACHER");
         try {
-            UserType userType = UserType.valueOf(sc.nextLine());
+            UserType userType = UserType.valueOf(sc.nextLine().toUpperCase());
 
             out.println("Enter username:");
             String username = sc.nextLine();
@@ -136,7 +142,7 @@ public class Server {
     }
 
 
-    private void studentMenu(Scanner sc, PrintWriter out, Student student) {
+    private void studentMenu(Scanner sc, PrintStream out, Student student) {
         out.println("Logged in as student.");
         List<Grade> sortedGrades = student.getGrades()
                 .stream()
@@ -145,7 +151,7 @@ public class Server {
         out.println(sortedGrades);
     }
 
-    private void teacherMenu(Scanner sc, PrintWriter out, Teacher teacher) {
+    private void teacherMenu(Scanner sc, PrintStream out, Teacher teacher) {
         out.println("Logged in as teacher.");
 
         out.println("Enter student faculty number:");
